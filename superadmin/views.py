@@ -7,6 +7,28 @@ from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
+from django.contrib.auth import get_user_model
+from rest_framework.decorators import api_view
+
+User = get_user_model()
+
+@api_view(['POST'])
+def create_super_user(request):
+    if request.data.get("secret") != "MY_SECRET_TOKEN":
+        return Response({"error": "Unauthorized"}, status=401)
+
+    email = request.data.get("email")
+    password = request.data.get("password")
+
+    if not email or not password:
+        return Response({"error": "Missing fields"}, status=400)
+
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "User already exists"}, status=400)
+
+    user = User.objects.create_superuser(email=email, password=password)
+    return Response({"success": f"Superuser {user.email} created"})
+
 class CreateEncoderView(APIView):
     permission_classes = [IsAuthenticated]
 

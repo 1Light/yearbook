@@ -51,3 +51,4 @@ class LoginAPIView(APIView):
             'access': str(refresh.access_token),
             'user': user_data,
         })
+    
