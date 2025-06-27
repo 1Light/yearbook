@@ -32,6 +32,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'unsafe-secret-key-for-local-dev-only'
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
 
+AUTHENTICATION_BACKENDS = [
+    'yearbook.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
