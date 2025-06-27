@@ -33,7 +33,6 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
 
 AUTHENTICATION_BACKENDS = [
-    'core.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

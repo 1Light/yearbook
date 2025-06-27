@@ -14,8 +14,11 @@ class LoginAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
+        print(email)
+        print(password)
 
         user = authenticate(request, email=email, password=password)
+        print(user)
         if user is None:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
