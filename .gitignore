@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.env
+venv/
+.env
+
+# Django
+*.log
+media/
+staticfiles/
+db.sqlite3
+
+# Flashcards
+notes.md
+
+# API Documentation
+api.md
