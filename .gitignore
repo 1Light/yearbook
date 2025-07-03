@@ -15,9 +15,5 @@ db.sqlite3
 # Flashcards
 notes.md
 
-<<<<<<< HEAD
-# API Documentation
-=======
-# API Documentation
-api.md
->>>>>>> 45d6be8f708767bfbc2fa3519b04fdaa1f248cc7
+# Static files
+staticfiles/
