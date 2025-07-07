@@ -1,7 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import User  # adjust if User is in another app
+from .models import User, StudentProfile, EncoderProfile  # import your profile models
+
+class StudentProfileInline(admin.StackedInline):
+    model = StudentProfile
+    can_delete = False
+    verbose_name_plural = 'Student Profile'
+
+class EncoderProfileInline(admin.StackedInline):
+    model = EncoderProfile
+    can_delete = False
+    verbose_name_plural = 'Encoder Profile'
 
 class UserAdmin(BaseUserAdmin):
     model = User
@@ -9,6 +19,8 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('role', 'is_staff', 'is_active')
     ordering = ('email',)
     search_fields = ('email', 'full_name')
+
+    inlines = [StudentProfileInline, EncoderProfileInline]  # add these inlines
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -24,4 +36,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(StudentProfile)
+admin.site.register(EncoderProfile)
