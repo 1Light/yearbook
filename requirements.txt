@@ -12,3 +12,4 @@ typing_extensions==4.14.0
 dj-database-url
 psycopg2-binary
 whitenoise
+django-shortuuidfield
