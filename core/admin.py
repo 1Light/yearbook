@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from .models import User, StudentProfile, EncoderProfile  # import your profile models
+from .models import User, StudentProfile, EncoderProfile
 
 class StudentProfileInline(admin.StackedInline):
     model = StudentProfile
@@ -22,7 +22,15 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     search_fields = ('email', 'full_name')
 
-    inlines = [StudentProfileInline, EncoderProfileInline]  # add these inlines
+    # Show only relevant profile inline depending on user's role
+    def get_inline_instances(self, request, obj=None):
+        inline_instances = []
+        if obj:
+            if obj.role == 'student':
+                inline_instances = [StudentProfileInline(self.model, self.admin_site)]
+            elif obj.role == 'encoder':
+                inline_instances = [EncoderProfileInline(self.model, self.admin_site)]
+        return inline_instances
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
@@ -39,5 +47,3 @@ class UserAdmin(BaseUserAdmin):
     )
 
 admin.site.register(User, UserAdmin)
-admin.site.register(StudentProfile)
-admin.site.register(EncoderProfile)
