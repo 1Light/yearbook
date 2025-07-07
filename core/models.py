@@ -107,4 +107,4 @@ class StudentProfile(models.Model):
     rejected_reason = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.full_name
+        return self.user.full_name if self.user else "Unnamed Student"
