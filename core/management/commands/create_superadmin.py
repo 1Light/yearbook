@@ -7,7 +7,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         User = get_user_model()
         email = "admin@gmail.com"
-        password = "12345"
+        password = "adminpass123"
         full_name = "Admin User"
 
         if not User.objects.filter(email=email).exists():

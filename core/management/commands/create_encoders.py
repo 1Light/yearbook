@@ -36,7 +36,7 @@ class Command(BaseCommand):
             if not User.objects.filter(email=data['email']).exists():
                 encoder = User.objects.create_encoder(
                     email=data['email'],
-                    password='pass123',
+                    password='encoderpass123',
                     full_name=data['full_name']
                 )
                 EncoderProfile.objects.create(
