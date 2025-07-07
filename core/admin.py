@@ -7,11 +7,13 @@ class StudentProfileInline(admin.StackedInline):
     model = StudentProfile
     can_delete = False
     verbose_name_plural = 'Student Profile'
+    fk_name = 'user'
 
 class EncoderProfileInline(admin.StackedInline):
     model = EncoderProfile
     can_delete = False
     verbose_name_plural = 'Encoder Profile'
+    fk_name = 'user'
 
 class UserAdmin(BaseUserAdmin):
     model = User
