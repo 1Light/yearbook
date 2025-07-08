@@ -82,6 +82,9 @@ def students_by_encoder(request, encoderId):
     students = StudentProfile.objects.filter(created_by=encoder_profile.user).select_related('user')
     data = []
     for student in students:
+
+        image_url = request.build_absolute_uri(student.image.url) if student.image else None
+
         data.append({
             'studentId': student.studentId,
             'email': student.user.email,
@@ -94,5 +97,6 @@ def students_by_encoder(request, encoderId):
             'bio': student.bio,
             'nickname': student.nickname,
             'future_goal': student.future_goal,
+            'image': image_url,
         })
     return JsonResponse({'students': data})
