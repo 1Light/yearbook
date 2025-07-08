@@ -8,6 +8,8 @@ from django.contrib.auth import get_user_model
 from .serializers import LoginSerializer
 from django.http import JsonResponse, Http404
 from core.models import EncoderProfile, StudentProfile
+from django.core.files.storage import default_storage
+from django.conf import settings
 
 class LoginAPIView(APIView):
     permission_classes = [AllowAny]
@@ -100,3 +102,10 @@ def students_by_encoder(request, encoderId):
             'image': image_url,
         })
     return JsonResponse({'students': data})
+
+def check_storage(request):
+    return JsonResponse({
+        'storage_class': str(default_storage.__class__),
+        'cloud_name': settings.CLOUDINARY_STORAGE.get('CLOUD_NAME', 'Not set'),
+        'default_file_storage': getattr(settings, 'DEFAULT_FILE_STORAGE', 'Not set')
+    })
