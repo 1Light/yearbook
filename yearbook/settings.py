@@ -110,8 +110,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "yearbook.wsgi.application"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+""" MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' """
 
 
 # Database
