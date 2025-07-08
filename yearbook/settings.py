@@ -37,6 +37,15 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Cloudinary settings
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -50,6 +59,8 @@ INSTALLED_APPS = [
     # Installed apps
     "rest_framework",
     "corsheaders",
+    "cloudinary",
+    "cloudinary_storage",
 
     # Local apps
     "yearbook",
