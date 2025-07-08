@@ -2,6 +2,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
+from cloudinary.models import CloudinaryField
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, role='student', **extra_fields):
@@ -93,7 +94,7 @@ class StudentProfile(models.Model):
     nickname = models.CharField(max_length=100, blank=True, null=True)
     future_goal = models.TextField(blank=True, null=True)
 
-    image = models.ImageField(upload_to='students/images/', blank=True, null=True)
+    image = CloudinaryField('image', blank=True, null=True)
     course_program = models.CharField(max_length=255, blank=True, null=True)  # Or ForeignKey to Course
     
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
