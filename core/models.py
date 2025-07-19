@@ -30,6 +30,9 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
         ('superadmin', 'Super Admin'),
+        ('highschool_admin', 'High School Admin'),
+        ('college_admin', 'College Admin'),
+        ('university_admin', 'University Admin'),
         ('encoder', 'Encoder'),
         ('student', 'Student'),
     ]
@@ -50,6 +53,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+class AdminProfile(models.Model):
+    INSTITUTION_TYPE_CHOICES = [
+        ('highschool', 'High School'),
+        ('college', 'College'),
+        ('university', 'University'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin_profile')
+    institution_type = models.CharField(max_length=20, choices=INSTITUTION_TYPE_CHOICES)
+    institution_name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                                   related_name='created_admins')  # the superadmin
+
+    def __str__(self):
+        return f"{self.user.full_name} ({self.institution_type})"
+
 class EncoderProfile(models.Model):
     ENCODER_TYPE_CHOICES = [
         (1, 'Student Registration'),
@@ -59,6 +78,9 @@ class EncoderProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='encoder_profile')
     encoderId = ShortUUIDField(unique=True, length=10, max_length=21, prefix="encoder", alphabet="ABCDEF0123456789")
+    # Add this field:
+    institution_type = models.CharField(max_length=20, choices=AdminProfile.INSTITUTION_TYPE_CHOICES)
+    
     phone_number = models.CharField(max_length=20)
     university = models.CharField(max_length=255)
     department = models.CharField(max_length=255)
