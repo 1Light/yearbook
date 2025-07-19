@@ -27,7 +27,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_admin(self, email, password=None, institution_type=None, institution_name=None, created_by=None, **extra_fields):
+    def create_admin(self, email, password=None, role=None, institution_type=None, institution_name=None, created_by=None, **extra_fields):
         if not institution_type or not institution_name:
             raise ValueError("institution_type and institution_name must be provided")
 
