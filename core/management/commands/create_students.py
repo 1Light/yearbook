@@ -3,16 +3,15 @@ from core.models import User, StudentProfile
 from django.utils.crypto import get_random_string
 
 class Command(BaseCommand):
-    help = 'Create 50 student users and profiles'
+    help = 'Create 3 student users and profiles'
 
     def handle(self, *args, **kwargs):
-        # Assume there is at least one encoder user who created these students
         encoder = User.objects.filter(role='encoder').first()
         if not encoder:
             self.stdout.write(self.style.ERROR("No encoder user found. Create at least one encoder first."))
             return
 
-        for i in range(1, 51):
+        for i in range(1, 4):  # Just 3 students
             email = f'student{i}@gmail.com'
             if User.objects.filter(email=email).exists():
                 self.stdout.write(self.style.WARNING(f"User {email} already exists. Skipping."))
@@ -26,7 +25,6 @@ class Command(BaseCommand):
                 full_name=full_name
             )
 
-            # Minimal required fields, customize as needed
             StudentProfile.objects.create(
                 user=user,
                 department="Computer Science",

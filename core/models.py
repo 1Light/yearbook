@@ -80,7 +80,7 @@ class EncoderProfile(models.Model):
     encoderId = ShortUUIDField(unique=True, length=10, max_length=21, prefix="encoder", alphabet="ABCDEF0123456789")
     # Add this field:
     institution_type = models.CharField(max_length=20, choices=AdminProfile.INSTITUTION_TYPE_CHOICES)
-    
+
     phone_number = models.CharField(max_length=20)
     university = models.CharField(max_length=255)
     department = models.CharField(max_length=255)
@@ -131,3 +131,32 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return self.user.full_name if self.user else "Unnamed Student"
+
+class StudentComment(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # the commenter
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.full_name} on {self.student.user.full_name}"
+
+class StudentLike(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # the liker
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'user')  # Prevent double-liking
+
+    def __str__(self):
+        return f"{self.user.full_name} liked {self.student.user.full_name}"
+    
+class StudentShare(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='shares')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # the one who shared
+    platform = models.CharField(max_length=50, blank=True, null=True)  # e.g., "email", "facebook"
+    shared_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.full_name} shared {self.student.user.full_name}"
