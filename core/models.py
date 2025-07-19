@@ -27,6 +27,25 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def create_admin(self, email, password=None, institution_type=None, institution_name=None, created_by=None, **extra_fields):
+        if not institution_type or not institution_name:
+            raise ValueError("institution_type and institution_name must be provided")
+
+        role_map = {
+            'highschool': 'highschool_admin',
+            'college': 'college_admin',
+            'university': 'university_admin'
+        }
+        role = role_map.get(institution_type)
+        if not role:
+            raise ValueError("Invalid institution_type. Must be 'highschool', 'college', or 'university'.")
+
+        user = self.create_user(email, password, role=role, **extra_fields)
+        user.is_staff = True
+        user.save(using=self._db)
+
+        return user
+
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
         ('superadmin', 'Super Admin'),

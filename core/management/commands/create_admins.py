@@ -37,11 +37,14 @@ class Command(BaseCommand):
 
         for data in admins_data:
             if not User.objects.filter(email=data['email']).exists():
-                admin_user = User.objects.create_user(
+                admin_user = User.objects.create_admin(
                     email=data['email'],
                     password='subadminpass123',
                     role=data['role'],
-                    full_name=data['full_name']
+                    full_name=data['full_name'],
+                    institution_type=data['institution_type'],
+                    institution_name=data['institution_name'],
+                    created_by=superadmin
                 )
                 AdminProfile.objects.create(
                     user=admin_user,
