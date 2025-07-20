@@ -51,7 +51,7 @@ def rsvp_prompt_view(request, token):
 class ReunionDateView(APIView):
     def get(self, request, user_id):
         try:
-            student = StudentProfile.objects.get(user_id=user_id)
+            student = StudentProfile.objects.get(studentId=user_id)
         except StudentProfile.DoesNotExist:
             return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -60,7 +60,7 @@ class ReunionDateView(APIView):
             return Response({"error": "Reunion date not available."}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({
-            "user_id": user_id,
+            "student_id": user_id,
             "reunion_date": reunion_date
         })
 
