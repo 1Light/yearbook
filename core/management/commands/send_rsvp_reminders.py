@@ -3,8 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
-from datetime import timedelta
-from datetime import timezone as dt_timezone
+from datetime import datetime, timezone as dt_timezone
 
 from core.models import StudentProfile
 from student.models import RSVPToken
@@ -14,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # today = timezone.now().date()
-        now = timezone.now()  # Use timezone.now() once for consistency
+        now = datetime.now(dt_timezone.utc)  # Use timezone.now() once for consistency
 
         domain = getattr(settings, 'FRONTEND_DOMAIN', 'https://digital-yearbook-backend.onrender.com')
 

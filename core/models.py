@@ -3,9 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from cloudinary.models import CloudinaryField
-from datetime import datetime, timedelta
-from datetime import timezone as dt_timezone
-from django.utils import timezone
+from datetime import datetime, timezone as dt_timezone
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, role='student', **extra_fields):
@@ -165,7 +163,7 @@ class StudentProfile(models.Model):
     def time_until_reunion(self):
         reunion = self.reunion_date()
         if reunion:
-            now = dt_timezone.now()
+            now = datetime.now(dt_timezone.utc)
             delta = reunion - now
             return delta if delta.total_seconds() > 0 else None
         return None

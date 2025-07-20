@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
+from datetime import datetime, timezone as dt_timezone
 from .models import RSVPToken
 
 from rest_framework.response import Response
@@ -41,7 +41,7 @@ def rsvp_prompt_view(request, token):
 
             student_profile = rsvp_token.user.student_profile
             student_profile.rsvp = (response == 'Yes')
-            student_profile.rsvp_date = timezone.now()
+            student_profile.rsvp_date = datetime.now(dt_timezone.utc) 
             student_profile.save()
 
             return render(request, "thank_you.html", {"response": response})
