@@ -29,8 +29,8 @@ class Command(BaseCommand):
 
             if minutes_left in [4, 3, 2, 1]:
                 token, created = RSVPToken.objects.get_or_create(user=student.user)
-                rsvp_link = reverse("rsvp_prompt", args=[token.token])
-                full_link = f"{domain}{rsvp_link}"
+                rsvp_link = reverse("rsvp_prompt", args=[token.token])  # returns '/rsvp/<uuid>/'
+                full_link = f"{domain}/api/student{rsvp_link}"  # prepend the 'api/student' part
 
                 send_mail(
                     subject="RSVP for Your Reunion",
