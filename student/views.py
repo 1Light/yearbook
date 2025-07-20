@@ -54,6 +54,9 @@ class ReunionDateView(APIView):
             student = StudentProfile.objects.get(studentId=user_id)
         except StudentProfile.DoesNotExist:
             return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         reunion_date = student.reunion_date
         if not reunion_date:
