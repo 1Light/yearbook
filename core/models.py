@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from cloudinary.models import CloudinaryField
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, role='student', **extra_fields):
@@ -148,8 +150,16 @@ class StudentProfile(models.Model):
     rejected_at = models.DateTimeField(null=True, blank=True)
     rejected_reason = models.TextField(blank=True, null=True)
 
+    rsvp = models.BooleanField(default=False)
+    rsvp_date = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return self.user.full_name if self.user else "Unnamed Student"
+    
+    def reunion_date(self):
+        if self.graduation_year:
+            return datetime(self.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
+        return None
 
 class StudentComment(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='comments')

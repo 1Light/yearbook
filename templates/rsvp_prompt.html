@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RSVP Confirmation</title>
+</head>
+<body>
+  <h2>Would you like to RSVP to your reunion?</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" name="response" value="Yes">Yes</button>
+    <button type="submit" name="response" value="No">No</button>
+  </form>
+</body>
+</html>

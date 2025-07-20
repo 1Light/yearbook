@@ -17,3 +17,6 @@ notes.md
 
 # Static files
 staticfiles/
+
+# Environment variables
+.env
