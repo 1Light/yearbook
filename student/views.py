@@ -52,19 +52,22 @@ class ReunionDateView(APIView):
     def get(self, request, user_id):
         try:
             student = StudentProfile.objects.get(studentId=user_id)
+            logger.debug(f"Found student: studentId={student.studentId}, user_email={student.user.email}")
         except StudentProfile.DoesNotExist:
+            logger.warning(f"Student not found with studentId={user_id}")
             return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            logger.error(f"Unexpected error: {e}")
+            logger.error(f"Unexpected error when retrieving student: {e}")
             return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         reunion_date = student.reunion_date
         if not reunion_date:
+            logger.warning(f"Reunion date not available for studentId={user_id}")
             return Response({"error": "Reunion date not available."}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({
             "student_id": user_id,
-            "reunion_date": reunion_date.isoformat()  # Convert datetime to string here
+            "reunion_date": reunion_date.isoformat()
         })
 
 class TimeUntilReunionView(APIView):
