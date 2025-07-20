@@ -157,7 +157,7 @@ class StudentProfile(models.Model):
     
     def reunion_date(self):
         if self.graduation_year:
-            return datetime(self.graduation_year + 10, 6, 30, tzinfo=dt_timezone.utc)
+            return datetime(self.graduation_year + 10, 6, 30, 9, 0, 0, tzinfo=dt_timezone.utc) # Reunion date is June 30th, 10 years at 9:00 AM UTC after graduation
         return None
     
     def time_until_reunion(self):
