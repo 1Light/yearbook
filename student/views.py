@@ -64,7 +64,7 @@ class ReunionDateView(APIView):
 
         return Response({
             "student_id": user_id,
-            "reunion_date": reunion_date
+            "reunion_date": reunion_date.isoformat()  # Convert datetime to string here
         })
 
 class TimeUntilReunionView(APIView):
