@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     subject="RSVP for Your Reunion",
                     # message=f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}",
                     message=f"Hi {student.user.full_name}, your reunion is in {minutes_left} minutes! Please RSVP here: {full_link}",
-                    from_email = settings.EMAIL_HOST_USER,
+                    from_email = settings.EMAIL_FROM,
                     recipient_list=[student.user.email],
                     fail_silently=False,
                 )
