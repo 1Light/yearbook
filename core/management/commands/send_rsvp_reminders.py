@@ -30,7 +30,9 @@ class Command(BaseCommand):
 
             naive_reunion_date = datetime(student.graduation_year + 10, 6, 30)
             reunion_date = make_aware(naive_reunion_date, dt_timezone.utc)
-            days_left = (reunion_date.date() - today.date()).days
+            """ days_left = (reunion_date.date() - today.date()).days """
+            days_left = 3  # For testing purposes, set to 3 days left
+            self.stdout.write(f"[DEBUG] Student {student.user.email}: days_left={days_left}")
 
             if days_left in [30, 7, 3, 1]:
                 token, created = RSVPToken.objects.get_or_create(user=student.user)
