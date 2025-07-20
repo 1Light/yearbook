@@ -3,7 +3,8 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
-from datetime import timedelta  # <-- add this import for timedelta
+from datetime import timedelta
+from datetime import timezone as dt_timezone
 
 from core.models import StudentProfile
 from student.models import RSVPToken
@@ -21,7 +22,7 @@ class Command(BaseCommand):
             if not student.graduation_year:
                 continue
 
-            # reunion_date = timezone.datetime(student.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
+            # reunion_date = timezone.datetime(student.graduation_year + 10, 6, 30, tzinfo=dt_timezone.utc)
             reunion_date = now + timedelta(minutes=10)  # Set reunion date 10 minutes from now for testing
 
             time_left = reunion_date - now

@@ -4,6 +4,7 @@ from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from cloudinary.models import CloudinaryField
 from datetime import datetime, timedelta
+from datetime import timezone as dt_timezone
 from django.utils import timezone
 
 class UserManager(BaseUserManager):
@@ -158,13 +159,13 @@ class StudentProfile(models.Model):
     
     def reunion_date(self):
         if self.graduation_year:
-            return datetime(self.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
+            return datetime(self.graduation_year + 10, 6, 30, tzinfo=dt_timezone.utc)
         return None
     
     def time_until_reunion(self):
         reunion = self.reunion_date()
         if reunion:
-            now = timezone.now()
+            now = dt_timezone.now()
             delta = reunion - now
             return delta if delta.total_seconds() > 0 else None
         return None
