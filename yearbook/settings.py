@@ -121,6 +121,9 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# RSVP secret token for running reminders
+RSVP_SECRET_TOKEN = os.getenv('RSVP_SECRET_TOKEN')
+
 WSGI_APPLICATION = "yearbook.wsgi.application"
 
 """ MEDIA_URL = '/media/'

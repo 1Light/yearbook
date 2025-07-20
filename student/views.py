@@ -15,12 +15,12 @@ from django.core.management import call_command
 from django.http import HttpResponse, HttpResponseForbidden
 from rest_framework.views import APIView
 
-SECRET_TOKEN = os.getenv("RSVP_SECRET_TOKEN")
+from django.conf import settings
 
 @csrf_exempt
 def run_rsvp_reminders(request):
     token = request.GET.get('token')
-    if token != SECRET_TOKEN:
+    if token != settings.RSVP_SECRET_TOKEN:
         return HttpResponseForbidden("Forbidden: Invalid token")
 
     call_command('send_rsvp_reminders')
