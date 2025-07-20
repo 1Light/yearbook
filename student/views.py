@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from core.models import StudentProfile
 
+import logging
+logger = logging.getLogger(__name__)
 
 import os
 from django.views.decorators.csrf import csrf_exempt
@@ -61,7 +63,7 @@ class ReunionDateView(APIView):
             "user_id": user_id,
             "reunion_date": reunion_date
         })
-    
+
 class TimeUntilReunionView(APIView):
     def get(self, request, student_id):
         try:
@@ -94,3 +96,9 @@ class TimeUntilReunionView(APIView):
             return Response({
                 "error": "Student not found."
             }, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            return Response({
+                "error": "Internal server error"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
