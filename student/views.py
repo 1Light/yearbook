@@ -7,7 +7,6 @@ from rest_framework import status
 from core.models import StudentProfile
 
 import logging
-logger = logging.getLogger(__name__)
 
 import os
 from django.views.decorators.csrf import csrf_exempt
@@ -16,6 +15,8 @@ from django.http import HttpResponse, HttpResponseForbidden
 from rest_framework.views import APIView
 
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def run_rsvp_reminders(request):
@@ -50,17 +51,23 @@ def rsvp_prompt_view(request, token):
 
 class ReunionDateView(APIView):
     def get(self, request, user_id):
+        logger.debug(f"Received request for user_id={user_id}")
+
         try:
             student = StudentProfile.objects.get(studentId=user_id)
-            logger.debug(f"Found student: studentId={student.studentId}, user_email={student.user.email}")
+            logger.debug("StudentProfile found")
+            user_email = getattr(student.user, 'email', 'N/A') if hasattr(student, 'user') else 'No user'
+            logger.debug(f"studentId={student.studentId}, user_email={user_email}")
         except StudentProfile.DoesNotExist:
             logger.warning(f"Student not found with studentId={user_id}")
             return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            logger.error(f"Unexpected error when retrieving student: {e}")
+            logger.error(f"Unexpected error: {str(e)}", exc_info=True)
             return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         reunion_date = student.reunion_date
+        logger.debug(f"Reunion date: {reunion_date}")
+
         if not reunion_date:
             logger.warning(f"Reunion date not available for studentId={user_id}")
             return Response({"error": "Reunion date not available."}, status=status.HTTP_400_BAD_REQUEST)
