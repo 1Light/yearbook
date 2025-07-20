@@ -160,6 +160,14 @@ class StudentProfile(models.Model):
         if self.graduation_year:
             return datetime(self.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
         return None
+    
+    def time_until_reunion(self):
+        reunion = self.reunion_date()
+        if reunion:
+            now = timezone.now()
+            delta = reunion - now
+            return delta if delta.total_seconds() > 0 else None
+        return None
 
 class StudentComment(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='comments')

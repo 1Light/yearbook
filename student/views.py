@@ -6,10 +6,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from core.models import StudentProfile
 
+
 import os
 from django.views.decorators.csrf import csrf_exempt
 from django.core.management import call_command
 from django.http import HttpResponse, HttpResponseForbidden
+from rest_framework.views import APIView
 
 SECRET_TOKEN = os.getenv("RSVP_SECRET_TOKEN")
 
@@ -44,17 +46,51 @@ def rsvp_prompt_view(request, token):
 
     return render(request, "rsvp_prompt.html", {"token": rsvp_token})
 
-def reunion_date_view(request, user_id):
-    try:
-        student = StudentProfile.objects.get(user_id=user_id)
-    except StudentProfile.DoesNotExist:
-        return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+class ReunionDateView(APIView):
+    def get(self, request, user_id):
+        try:
+            student = StudentProfile.objects.get(user_id=user_id)
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    reunion_date = student.reunion_date  # Uses your property method
-    if not reunion_date:
-        return Response({"error": "Reunion date not available."}, status=status.HTTP_400_BAD_REQUEST)
+        reunion_date = student.reunion_date
+        if not reunion_date:
+            return Response({"error": "Reunion date not available."}, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response({
-        "user_id": user_id,
-        "reunion_date": reunion_date
-    })
+        return Response({
+            "user_id": user_id,
+            "reunion_date": reunion_date
+        })
+    
+class TimeUntilReunionView(APIView):
+    def get(self, request, student_id):
+        try:
+            student = StudentProfile.objects.get(studentId=student_id)
+            time_left = student.time_until_reunion()
+
+            if time_left and time_left.total_seconds() > 0:
+                total_seconds = time_left.total_seconds()
+                minutes_left = total_seconds // 60
+                approx_years_left = time_left.days // 365
+                approx_months_left = (time_left.days % 365) // 30
+
+                return Response({
+                    "student_id": student_id,
+                    "reunion_date": student.reunion_date().isoformat(),
+                    "days_left": time_left.days,
+                    "minutes_left": int(minutes_left),
+                    "seconds_left": int(total_seconds),
+                    "approx_years_left": int(approx_years_left),
+                    "approx_months_left": int(approx_months_left)
+                })
+
+            else:
+                return Response({
+                    "student_id": student_id,
+                    "message": "Reunion date has already passed or graduation year not set."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        except StudentProfile.DoesNotExist:
+            return Response({
+                "error": "Student not found."
+            }, status=status.HTTP_404_NOT_FOUND)

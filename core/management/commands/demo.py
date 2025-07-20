@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
-from datetime import timedelta  # <-- add this import for timedelta
 
 from core.models import StudentProfile
 from student.models import RSVPToken
@@ -12,8 +11,7 @@ class Command(BaseCommand):
     help = "Send RSVP reminder emails to students"
 
     def handle(self, *args, **kwargs):
-        # today = timezone.now().date()
-        now = timezone.now()  # Use timezone.now() once for consistency
+        today = timezone.now().date()
 
         domain = getattr(settings, 'FRONTEND_DOMAIN', 'https://digital-yearbook-backend.onrender.com')
 
@@ -21,21 +19,17 @@ class Command(BaseCommand):
             if not student.graduation_year:
                 continue
 
-            # reunion_date = timezone.datetime(student.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
-            reunion_date = now + timedelta(minutes=10)  # Set reunion date 10 minutes from now for testing
+            reunion_date = timezone.datetime(student.graduation_year + 10, 6, 30, tzinfo=timezone.utc)
+            days_left = (reunion_date.date() - today).days
 
-            time_left = reunion_date - now
-            minutes_left = int(time_left.total_seconds() // 60)
-
-            if minutes_left in [4, 3, 2, 1]:
+            if days_left in [30, 7, 3, 1]:
                 token, created = RSVPToken.objects.get_or_create(user=student.user)
                 rsvp_link = reverse("rsvp_prompt", args=[token.token])
                 full_link = f"{domain}{rsvp_link}"
 
                 send_mail(
                     subject="RSVP for Your Reunion",
-                    # message=f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}",
-                    message=f"Hi {student.user.full_name}, your reunion is in {minutes_left} minutes! Please RSVP here: {full_link}",
+                    message=f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}",
                     from_email="no-reply@reunionmail.com",
                     recipient_list=[student.user.email],
                     fail_silently=False,
