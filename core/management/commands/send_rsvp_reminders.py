@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
-from datetime import datetime, timezone as dt_timezone
+from datetime import datetime, timezone as dt_timezone, timedelta
 
 from core.models import StudentProfile
 from student.models import RSVPToken
@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 continue
 
             # reunion_date = timezone.datetime(student.graduation_year + 10, 6, 30, tzinfo=dt_timezone.utc)
-            reunion_date = now + timedelta(minutes=10)  # Set reunion date 10 minutes from now for testing
+            reunion_date = now + timedelta(minutes=7)  # Set reunion date 10 minutes from now for testing
 
             time_left = reunion_date - now
             minutes_left = int(time_left.total_seconds() // 60)
@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     subject="RSVP for Your Reunion",
                     # message=f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}",
                     message=f"Hi {student.user.full_name}, your reunion is in {minutes_left} minutes! Please RSVP here: {full_link}",
-                    from_email="no-reply@reunionmail.com",
+                    from_email = settings.EMAIL_HOST_USER,
                     recipient_list=[student.user.email],
                     fail_silently=False,
                 )
