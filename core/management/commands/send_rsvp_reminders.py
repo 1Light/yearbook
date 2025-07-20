@@ -29,6 +29,7 @@ class Command(BaseCommand):
             reunion_date = now + timedelta(minutes=7)  # For testing purposes
             time_left = reunion_date - now
             minutes_left = int(time_left.total_seconds() // 60)
+            minutes_left = 3
             self.stdout.write(f"[DEBUG] Student {student.user.email}: minutes_left={minutes_left}")
 
             if minutes_left in [4, 3, 2, 1]:
