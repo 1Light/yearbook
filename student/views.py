@@ -65,7 +65,7 @@ class ReunionDateView(APIView):
             logger.error(f"Unexpected error: {str(e)}", exc_info=True)
             return Response({"error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        reunion_date = student.reunion_date
+        reunion_date = student.reunion_date()
         logger.debug(f"Reunion date: {reunion_date}")
 
         if not reunion_date:
