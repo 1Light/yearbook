@@ -8,4 +8,6 @@ urlpatterns = [
     path('<str:user_id>/reunion-date/', views.ReunionDateView.as_view(), name='reunion_date'),
     path('<str:student_id>/time-until-reunion/', views.TimeUntilReunionView.as_view(), name='time_until_reunion'),
     path('<str:studentId>/share/', views.get_shareable_student_profile, name='student-share'),
+    path('share/log/', views.log_share, name='log-share'),
+    path('<str:student_id>/toggle-like/', views.toggle_like, name='toggle-like'),
 ]
