@@ -93,7 +93,7 @@ def create_event(request):
             logger.debug(f"Parsed tags: {tag_list}")
             event.tags.add(*tag_list)
 
-        return Response({'message': 'Event video created successfully.', 'event_id': event.event_id},
+        return Response({'message': 'Event video created successfully.', 'event_id': event.eventId},
                         status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.exception("Failed to create event video.")
