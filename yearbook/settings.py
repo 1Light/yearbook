@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     # Installed apps
     "rest_framework",
     "corsheaders",
+    "taggit",
 
     # Local apps
     "yearbook",
