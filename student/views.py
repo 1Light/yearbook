@@ -11,7 +11,7 @@ import json
 
 from rest_framework.response import Response
 from rest_framework import status
-from core.models import StudentProfile, StudentShare, StudentLike
+from core.models import StudentProfile, StudentShare, StudentLike, User
 
 import logging
 
@@ -169,28 +169,28 @@ def log_share(request):
 """ Make sure user is authenticated before accessing this view. """
 """ @login_required decorator can be used to enforce this. """
 
-@csrf_exempt
-@permission_classes([IsAuthenticated])
 def toggle_like(request, student_id):
     try:
         if request.method != 'POST':
             logger.warning(f"Invalid request method: {request.method} on toggle_like")
             return HttpResponseBadRequest("Only POST requests allowed")
+        
+        test_user = User.objects.get(email="student1@gmail.com")
 
-        logger.info(f"User {request.user} is toggling like for student {student_id}")
+        logger.info(f"User {test_user} is toggling like for student {student_id}")
 
         student = get_object_or_404(StudentProfile, studentId=student_id)
 
-        like, created = StudentLike.objects.get_or_create(student=student, user=request.user)
+        like, created = StudentLike.objects.get_or_create(student=student, user=test_user)
 
         if not created:
             # already liked, so unlike
             like.delete()
             liked = False
-            logger.info(f"User {request.user} unliked student {student_id}")
+            logger.info(f"User {test_user} unliked student {student_id}")
         else:
             liked = True
-            logger.info(f"User {request.user} liked student {student_id}")
+            logger.info(f"User {test_user} liked student {student_id}")
 
         total_likes = student.likes.count()
         logger.info(f"Student {student_id} now has {total_likes} likes")
