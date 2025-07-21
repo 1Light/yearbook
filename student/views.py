@@ -251,7 +251,7 @@ class RSVPStudentListView(View):
         data = [
             {
                 "studentId": student.studentId,
-                "full_name": student.user.get_full_name(),
+                "full_name": student.user.full_name,
                 "email": student.user.email,
                 "department": student.department,
                 "university": student.university,
