@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from datetime import datetime, timezone as dt_timezone
 from .models import RSVPToken
+from django.http import JsonResponse, Http404
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -115,3 +116,22 @@ class TimeUntilReunionView(APIView):
             return Response({
                 "error": "Internal server error"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+def get_shareable_student_profile(request, studentId):
+    try:
+        student = StudentProfile.objects.select_related('user').get(studentId=studentId, status='approved')
+    except StudentProfile.DoesNotExist:
+        raise Http404("Student profile not found or not approved.")
+
+    data = {
+        "full_name": student.user.get_full_name(),
+        "nickname": student.nickname,
+        "quote": student.quote,
+        "bio": student.bio,
+        "best_memory": student.best_memory,
+        "department": student.department,
+        "graduation_year": student.graduation_year,
+        "image_url": student.image.url if student.image else None,
+        "share_url": f"https://frontenddomain.com/students/{student.studentId}"
+    }
+    return JsonResponse(data)
