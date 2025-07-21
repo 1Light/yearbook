@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from datetime import datetime, timezone as dt_timezone
 from .models import RSVPToken
 from django.http import JsonResponse, Http404
+from django.http import JsonResponse, HttpResponseBadRequest
 
 from django.utils.decorators import method_decorator
 import json
@@ -167,21 +168,34 @@ def log_share(request):
 """ @login_required decorator can be used to enforce this. """
 
 def toggle_like(request, student_id):
-    student = get_object_or_404(StudentProfile, studentId=student_id)
+    try:
+        if request.method != 'POST':
+            logger.warning(f"Invalid request method: {request.method} on toggle_like")
+            return HttpResponseBadRequest("Only POST requests allowed")
 
-    like, created = StudentLike.objects.get_or_create(
-        student=student,
-        user=request.user
-    )
+        logger.info(f"User {request.user} is toggling like for student {student_id}")
 
-    if not created:
-        # already liked, so unlike
-        like.delete()
-        liked = False
-    else:
-        liked = True
+        student = get_object_or_404(StudentProfile, studentId=student_id)
 
-    return JsonResponse({
-        'liked': liked,
-        'total_likes': student.likes.count()
-    })
+        like, created = StudentLike.objects.get_or_create(student=student, user=request.user)
+
+        if not created:
+            # already liked, so unlike
+            like.delete()
+            liked = False
+            logger.info(f"User {request.user} unliked student {student_id}")
+        else:
+            liked = True
+            logger.info(f"User {request.user} liked student {student_id}")
+
+        total_likes = student.likes.count()
+        logger.info(f"Student {student_id} now has {total_likes} likes")
+
+        return JsonResponse({
+            'liked': liked,
+            'total_likes': total_likes
+        })
+
+    except Exception as e:
+        logger.error(f"Error in toggle_like: {e}", exc_info=True)
+        return JsonResponse({'error': 'Internal server error'}, status=500)
