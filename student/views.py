@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from datetime import datetime, timezone as dt_timezone
 from .models import RSVPToken
 from django.http import JsonResponse, Http404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse, HttpResponseBadRequest
 
 from django.utils.decorators import method_decorator
@@ -168,6 +170,7 @@ def log_share(request):
 """ @login_required decorator can be used to enforce this. """
 
 @csrf_exempt
+@permission_classes([IsAuthenticated])
 def toggle_like(request, student_id):
     try:
         if request.method != 'POST':
