@@ -10,4 +10,5 @@ urlpatterns = [
     path('<str:studentId>/share/', views.get_shareable_student_profile, name='student-share'),
     path('share/log/', views.log_share, name='log-share'),
     path('<str:student_id>/toggle-like/', views.toggle_like, name='toggle-like'),
+    path('rsvp-students/', views.RSVPStudentListView.as_view(), name='rsvp-students'),
 ]

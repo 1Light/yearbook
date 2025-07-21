@@ -5,13 +5,14 @@ from django.http import JsonResponse, Http404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.views import View
 
 from django.utils.decorators import method_decorator
 import json
 
 from rest_framework.response import Response
 from rest_framework import status
-from core.models import StudentProfile, StudentShare, StudentLike, User
+from core.models import StudentProfile, StudentShare, StudentComment, StudentLike, User
 
 import logging
 
@@ -243,3 +244,21 @@ def add_comment(request, student_id):
     except Exception as e:
         logger.error(f"Error adding comment: {e}", exc_info=True)
         return JsonResponse({'error': 'Internal server error.'}, status=500)
+
+class RSVPStudentListView(View):
+    def get(self, request):
+        students = StudentProfile.objects.filter(rsvp=True).select_related('user')
+        data = [
+            {
+                "studentId": student.studentId,
+                "full_name": student.user.get_full_name(),
+                "email": student.user.email,
+                "department": student.department,
+                "university": student.university,
+                "graduation_year": student.graduation_year,
+                "quote": student.quote,
+                "rsvp_date": student.rsvp_date.isoformat() if student.rsvp_date else None,
+            }
+            for student in students
+        ]
+        return JsonResponse({"rsvp_students": data}, status=200)
