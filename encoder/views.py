@@ -40,6 +40,7 @@ class CreateStudentView(APIView):
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_event(request):
     user = request.user
