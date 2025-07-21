@@ -176,22 +176,22 @@ def toggle_like(request, student_id):
             logger.warning(f"Invalid request method: {request.method} on toggle_like")
             return HttpResponseBadRequest("Only POST requests allowed")
         
-        test_user = User.objects.get(email="student1@gmail.com")
+        """ test_user = User.objects.get(email="student1@gmail.com") """
 
-        logger.info(f"User {test_user} is toggling like for student {student_id}")
+        logger.info(f"User {request.user} is toggling like for student {student_id}")
 
         student = get_object_or_404(StudentProfile, studentId=student_id)
 
-        like, created = StudentLike.objects.get_or_create(student=student, user=test_user)
+        like, created = StudentLike.objects.get_or_create(student=student, user=request.user)
 
         if not created:
             # already liked, so unlike
             like.delete()
             liked = False
-            logger.info(f"User {test_user} unliked student {student_id}")
+            logger.info(f"User {request.user} unliked student {student_id}")
         else:
             liked = True
-            logger.info(f"User {test_user} liked student {student_id}")
+            logger.info(f"User {request.user} liked student {student_id}")
 
         total_likes = student.likes.count()
         logger.info(f"Student {student_id} now has {total_likes} likes")
@@ -204,3 +204,42 @@ def toggle_like(request, student_id):
     except Exception as e:
         logger.error(f"Error in toggle_like: {e}", exc_info=True)
         return JsonResponse({'error': 'Internal server error'}, status=500)
+
+""" Remember to remove csrf_exempt in production. This is only for testing purposes. """
+
+@csrf_exempt
+def add_comment(request, student_id):
+    if request.method != 'POST':
+        return HttpResponseBadRequest('Only POST requests allowed.')
+
+    try:
+        data = json.loads(request.body)
+        text = data.get('text')
+        if not text:
+            return JsonResponse({'error': 'Comment text is required.'}, status=400)
+
+        student = get_object_or_404(StudentProfile, studentId=student_id)
+        
+        # In real setup, use request.user for commenter. For testing, you can fake user:
+        user = request.user if request.user.is_authenticated else None
+        if not user:
+            return JsonResponse({'error': 'Authentication required.'}, status=401)
+
+        comment = StudentComment.objects.create(student=student, user=user, text=text)
+        logger.info(f"User {user} commented on {student}")
+
+        return JsonResponse({
+            'message': 'Comment added successfully',
+            'comment': {
+                'id': comment.id,
+                'text': comment.text,
+                'user': user.full_name,
+                'created_at': comment.created_at.isoformat()
+            }
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON.'}, status=400)
+    except Exception as e:
+        logger.error(f"Error adding comment: {e}", exc_info=True)
+        return JsonResponse({'error': 'Internal server error.'}, status=500)
