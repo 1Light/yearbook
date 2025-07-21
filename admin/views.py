@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.contrib.auth import get_user_model
-from .models import AdminProfile
+from core.models import AdminProfile
 
 User = get_user_model()
 
