@@ -124,7 +124,7 @@ def get_shareable_student_profile(request, studentId):
         raise Http404("Student profile not found or not approved.")
 
     data = {
-        "full_name": student.user.get_full_name(),
+        "full_name": student.user.full_name,
         "nickname": student.nickname,
         "quote": student.quote,
         "bio": student.bio,
