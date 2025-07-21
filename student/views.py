@@ -169,6 +169,7 @@ def log_share(request):
 """ Make sure user is authenticated before accessing this view. """
 """ @login_required decorator can be used to enforce this. """
 
+@csrf_exempt
 def toggle_like(request, student_id):
     try:
         if request.method != 'POST':
