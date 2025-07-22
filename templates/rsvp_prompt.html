@@ -2,13 +2,61 @@
 <html>
 <head>
   <title>RSVP Confirmation</title>
+  <style>
+    /* Make the whole page fill the viewport */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+    }
+
+    /* Use flexbox to center content */
+    body {
+      display: flex;
+      justify-content: center;  /* horizontally center */
+      align-items: center;      /* vertically center */
+    }
+
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 320px;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    form button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 10px 25px;
+      margin: 0 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h2>Would you like to RSVP to your reunion?</h2>
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" name="response" value="Yes">Yes</button>
-    <button type="submit" name="response" value="No">No</button>
-  </form>
+  <div class="container">
+    <h2>Would you like to RSVP to your reunion?</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" name="response" value="Yes">Yes</button>
+      <button type="submit" name="response" value="No">No</button>
+    </form>
+  </div>
 </body>
 </html>

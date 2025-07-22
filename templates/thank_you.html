@@ -2,11 +2,43 @@
 <html>
 <head>
   <title>Thank You</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 16px;
+      color: #555;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Thank you for your response: {{ response }}</h2>
-  {% if response_changed %}
-    <p>Your response has been updated.</p>
-  {% endif %}
+  <div class="container">
+    <h2>Thank you for your response: {{ response }}</h2>
+    {% if response_changed %}
+      <p>Your response has been updated.</p>
+    {% endif %}
+  </div>
 </body>
 </html>
