@@ -22,7 +22,7 @@ class Command(BaseCommand):
         domain = getattr(settings, 'FRONTEND_DOMAIN', 'https://digital-yearbook-backend.onrender.com')
         self.stdout.write(f"[DEBUG] Using domain: {domain}")
 
-        students = StudentProfile.objects.filter(status='approved', rsvp=False)
+        students = StudentProfile.objects.filter(status='approved')
         self.stdout.write(f"[DEBUG] Found {students.count()} students to check")
 
         for student in students:
@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 full_link = f"{domain}{rsvp_link}"
 
                 # Inside the loop
-                html_content = render_to_string("emails/rsvp_email_reminder.html", {
+                html_content = render_to_string("rsvp_email_reminder.html", {
                     "full_name": student.user.full_name,
                     "rsvp_link": full_link,
                     "days_left": days_left
