@@ -4,6 +4,8 @@ from django.utils.timezone import make_aware
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.mail import EmailMultiAlternatives
 
 from datetime import datetime, timezone as dt_timezone
 
@@ -39,12 +41,23 @@ class Command(BaseCommand):
                 rsvp_link = reverse("rsvp_prompt", args=[token.token])
                 full_link = f"{domain}{rsvp_link}"
 
-                send_mail(
-                    subject="RSVP for Your Reunion",
-                    message=f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}",
+                # Inside the loop
+                html_content = render_to_string("emails/rsvp_email_reminder.html", {
+                    "full_name": student.user.full_name,
+                    "rsvp_link": full_link,
+                    "days_left": days_left
+                })
+
+                subject = "RSVP for Your Reunion"
+                text_content = f"Hi {student.user.full_name}, your reunion is in {days_left} days! Please RSVP here: {full_link}"
+
+                msg = EmailMultiAlternatives(
+                    subject=subject,
+                    body=text_content,
                     from_email="no-reply@reunionmail.com",
-                    recipient_list=[student.user.email],
-                    fail_silently=False,
+                    to=[student.user.email]
                 )
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
 
                 self.stdout.write(f"Sent RSVP email to {student.user.email}")
