@@ -39,24 +39,30 @@ def run_rsvp_reminders(request):
 def rsvp_prompt_view(request, token):
     rsvp_token = get_object_or_404(RSVPToken, token=token)
 
-    if rsvp_token.responded:
-        return render(request, "already_responded.html")
-
     if request.method == "POST":
         response = request.POST.get("response")
         if response in ["Yes", "No"]:
+            previous_response = rsvp_token.response if rsvp_token.responded else None
+            response_changed = previous_response and previous_response != response
+
             rsvp_token.response = response
             rsvp_token.responded = True
             rsvp_token.save()
 
             student_profile = rsvp_token.user.student_profile
             student_profile.rsvp = (response == 'Yes')
-            student_profile.rsvp_date = datetime.now(dt_timezone.utc) 
+            student_profile.rsvp_date = datetime.now(dt_timezone.utc)
             student_profile.save()
 
-            return render(request, "thank_you.html", {"response": response})
+            return render(request, "thank_you.html", {
+                "response": response,
+                "response_changed": response_changed
+            })
 
-    return render(request, "rsvp_prompt.html", {"token": rsvp_token})
+    return render(request, "rsvp_prompt.html", {
+        "token": rsvp_token,
+        "current_response": rsvp_token.response if rsvp_token.responded else None
+    })
 
 class ReunionDateView(APIView):
     def get(self, request, user_id):

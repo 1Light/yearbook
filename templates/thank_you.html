@@ -5,5 +5,8 @@
 </head>
 <body>
   <h2>Thank you for your response: {{ response }}</h2>
+  {% if response_changed %}
+    <p>Your response has been updated.</p>
+  {% endif %}
 </body>
 </html>
