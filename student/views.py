@@ -34,7 +34,8 @@ def run_rsvp_reminders(request):
         return HttpResponseForbidden("Forbidden: Invalid token")
 
     call_command('send_rsvp_reminders')
-    return HttpResponse("RSVP reminders sent successfully.")
+    return HttpResponse(status=204)
+    """ return HttpResponse("RSVP reminders sent successfully.") """
 
 def rsvp_prompt_view(request, token):
     rsvp_token = get_object_or_404(RSVPToken, token=token)
